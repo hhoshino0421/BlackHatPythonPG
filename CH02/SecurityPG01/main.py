@@ -3,6 +3,7 @@ import sys
 from TCPClient import *
 from UDPClient import *
 from TCPServer import *
+from netcat import *
 
 
 # メイン処理
@@ -40,6 +41,12 @@ def main():
         server_port = 9998
         max_clients = 5
         server_main(server_ip, server_port, max_clients)
+
+    elif first_flg == 4:
+        # netcatを指定
+
+        # 対話型netcat関数を実行
+        netcat_main()
 
     else:
         # 第一引数エラー
