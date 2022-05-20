@@ -61,7 +61,61 @@ class NetCat:
             self.socket.close()
             sys.exit()
 
+    def listen(self):
 
+        self.socket.bind((self.args.target, self.args.port))
+        self.socket.listen(5)
+
+        while True:
+            client_socket, _ = self.socket.accept()
+            client_thread = threading.Thread(
+                target=self.handle, args=(client_socket, )
+            )
+            client_thread.start()
+
+    def handle(self, client_socket):
+
+        if self.args.execute:
+
+            output = netcat_execute(self.args.execute)
+            client_socket.send(output.encode)
+
+        elif self.args.upload:
+
+            file_buffer = b''
+            while True:
+                data = client_socket.recv(4096)
+                if data:
+                    file_buffer += data
+                else:
+                    break
+
+            with open(self.args.upload, 'wb') as f:
+                f.write(file_buffer)
+
+            message = f'Saved file {self.args.upload}'
+            client_socket.send(message.encode())
+
+        elif self.args.comamnd:
+
+            cmd_buffer = b''
+
+            while True:
+
+                try:
+                    client_socket.send(b'<BHP:#> ')
+                    while '\n' not in cmd_buffer.decode():
+                        cmd_buffer += client_socket.recv(46)
+                    response = netcat_execute(cmd_buffer.decode())
+
+                    if response:
+                        client_socket.send(response.encode())
+                    cmd_buffer = b''
+
+                except Exception as e:
+                    print(f'server killed {e}')
+                    self.socket.close()
+                    sys.exit()
 
 
 # netcat関数のエントリポイント関数
@@ -109,9 +163,7 @@ def netcat_main():
 
     nc = NetCat(args, buffer.encode())
 
-    nc.run
-
-
+    nc.run()
 
 
 # netcat実行関数
