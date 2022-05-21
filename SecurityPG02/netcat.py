@@ -118,12 +118,13 @@ class NetCat:
                     sys.exit()
 
 
-# netcat関数のエントリポイント関数
+# netcat関数のメイン関数
+# 関数のエントリポイント関数
 def netcat_main():
 
     # 対話型コマンドラインインタフェースを開始
     parser_obj = argparse.ArgumentParser(
-        discription='BHP Net Tool',
+        description='BHP Net Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent(
             '''
@@ -144,7 +145,7 @@ def netcat_main():
 
     parser_obj.add_argument('-c', '--command', action='store_true', help='対話型シェルの初期化')
 
-    parser_obj.add_argument('c', '--execute', help='指定のコマンドの実行')
+    parser_obj.add_argument('-e', '--execute', help='指定のコマンドの実行')
 
     parser_obj.add_argument('-l', '--listen', action='store_true', help='通常待受モード')
 
