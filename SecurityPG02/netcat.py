@@ -96,7 +96,7 @@ class NetCat:
             message = f'Saved file {self.args.upload}'
             client_socket.send(message.encode())
 
-        elif self.args.comamnd:
+        elif self.args.command:
 
             cmd_buffer = b''
 
