@@ -1,12 +1,15 @@
 
-# データがASCIIならそのまま保持、それ以外は"."に置換するテーブル
+
 import socket
 import sys
 import threading
 
+# データがASCIIならそのまま保持、それ以外は"."に置換するテーブル
 HEX_FILTER = ''.join(
     [(len(repr(chr(i))) == 3) and chr(i) or '.' for i in range(256)]
 )
+
+timeout_second = 10
 
 
 # エントリポイント関数
@@ -50,7 +53,7 @@ def receive_from(connection):
 
     buffer = b""
 
-    connection.settimeout(5)
+    connection.settimeout(timeout_second)
 
     try:
         while True:
@@ -58,8 +61,10 @@ def receive_from(connection):
             if not data:
                 break
             buffer += data
-    except:
+
+    except Exception as ee:
         print("recv error")
+        print(ee)
         return
 
     return buffer
@@ -137,7 +142,7 @@ def server_loop(local_host, local_port,
 
     try:
 
-        server.bind((local_host,local_port))
+        server.bind((local_host, local_port))
 
     except Exception as ee:
 
